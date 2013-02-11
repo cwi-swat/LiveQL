@@ -13,6 +13,6 @@ argument which represents a path to a QL file (see under
 `nl.cwi.swat.liveql.examples` for examples). NB: currently this path
 should be relative to the classpath of the project.
 
-Questions and comments: [Tijs van der Storm](storm@cwi.nl).
+Questions and comments: [Tijs van der Storm](mailto:storm@cwi.nl).
 
 
