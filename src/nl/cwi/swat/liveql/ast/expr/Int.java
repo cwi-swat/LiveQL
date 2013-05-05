@@ -27,4 +27,14 @@ public class Int extends Literal {
 		return new nl.cwi.swat.liveql.ast.types.Int();
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!(obj instanceof Int)) {
+			return false;
+		}
+		return getValue() == ((Int)obj).getValue();
+	}
 }

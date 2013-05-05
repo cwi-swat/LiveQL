@@ -26,5 +26,16 @@ public class Bool extends Literal {
 	public Boolean getValue() {
 		return value;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!(obj instanceof Bool)) {
+			return false;
+		}
+		return getValue().equals(((Bool)obj).getValue());
+	}
 
 }

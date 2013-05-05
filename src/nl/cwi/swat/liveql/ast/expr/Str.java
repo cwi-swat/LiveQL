@@ -26,5 +26,16 @@ public class Str extends Literal {
 	public <T> T accept(Visitor<T> visitor) {
 		return visitor.visit(this);
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!(obj instanceof Str)) {
+			return false;
+		}
+		return getValue().equals(((Str)obj).getValue());
+	}
 
 }
