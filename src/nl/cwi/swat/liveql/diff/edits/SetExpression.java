@@ -2,10 +2,8 @@ package nl.cwi.swat.liveql.diff.edits;
 
 import nl.cwi.swat.liveql.ast.expr.Expr;
 import nl.cwi.swat.liveql.ast.stat.Computed;
-import nl.cwi.swat.liveql.ast.stat.Stat;
-import nl.cwi.swat.liveql.diff.Edit;
 
-public class SetExpression implements Edit<Stat> {
+public class SetExpression extends QLEdit {
 
 	private final Expr expr;
 	private final Expr old;
@@ -32,4 +30,8 @@ public class SetExpression implements Edit<Stat> {
 		return new Computed(c.getLabel(), c.getName(), c.getType(), old);
 	}
 
+	@Override
+	public void accept(Visitor visitor) {
+		visitor.visit(this);
+	}
 }

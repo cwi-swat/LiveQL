@@ -1,6 +1,7 @@
 package nl.cwi.swat.liveql.render;
 
 import java.awt.Component;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -13,14 +14,14 @@ import nl.cwi.swat.liveql.eval.Value;
 
 public class ConditionObserver implements Observer {
 	
-	private final Expr cond;
+	private final List<Expr> conds;
 	private final State state;
 	private final JFrame window;
 	private final Component label;
 	private final Component widget;
 
-	public ConditionObserver(Expr cond, Component label, Component widget, State state, JFrame window) {
-		this.cond = cond;
+	public ConditionObserver(List<Expr> conds, Component label, Component widget, State state, JFrame window) {
+		this.conds = conds;
 		this.label = label;
 		this.widget = widget;
 		this.state = state;
@@ -35,10 +36,20 @@ public class ConditionObserver implements Observer {
 	}
 
 	private void updateVisibility() {
-		Value value = cond.accept(new Eval(state.getEnv()));
-		boolean visible = value.isDefined() && ((Bool)value).getValue();
+		boolean visible = isEnabled();
 		label.setVisible(visible);
 		widget.setVisible(visible);
 	}
 
+	private boolean isEnabled() {
+		for (Expr cond: conds) {
+			Value value = cond.accept(new Eval(state.getEnv()));
+			boolean enabled = value.isDefined() && ((Bool)value).getValue();
+			if (!enabled) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
 }

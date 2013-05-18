@@ -1,10 +1,9 @@
 package nl.cwi.swat.liveql.diff.edits;
 
 import nl.cwi.swat.liveql.ast.stat.Stat;
-import nl.cwi.swat.liveql.diff.Edit;
 import nl.cwi.swat.liveql.patch.BlockPatch;
 
-public abstract class  BlockEdit implements Edit<Stat> {
+public abstract class  BlockEdit extends QLEdit {
 
 	private final int position;
 	private final Stat statement;

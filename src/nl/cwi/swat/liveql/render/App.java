@@ -37,7 +37,7 @@ import net.miginfocom.swing.MigLayout;
 import nl.cwi.swat.liveql.ast.form.Form;
 import nl.cwi.swat.liveql.check.Message;
 import nl.cwi.swat.liveql.parser.test.ParseError;
-import nl.cwi.swat.liveql.patch.AddToJTree;
+import nl.cwi.swat.liveql.patch.PatchToJTree;
 import nl.cwi.swat.liveql.patch.FormPatch;
 import nl.cwi.swat.liveql.patch.StatPatch;
 import nl.cwi.swat.liveql.render.Util.Pair;
@@ -228,7 +228,7 @@ public class App implements Runnable {
 				DefaultTreeModel model = (DefaultTreeModel) diffTree.getModel();
 				DefaultMutableTreeNode top = (DefaultMutableTreeNode)model.getRoot();
 				top.removeAllChildren();
-				AddToJTree.patchIntoJTree(diff, top);
+				PatchToJTree.patchIntoJTree(diff, top);
 				//model.insertNodeInto(top, top, top.getChildCount());
 				model.reload();
 				for (int i = 0; i < diffTree.getRowCount(); i++) {

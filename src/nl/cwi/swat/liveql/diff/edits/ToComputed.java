@@ -1,10 +1,8 @@
 package nl.cwi.swat.liveql.diff.edits;
 
 import nl.cwi.swat.liveql.ast.expr.Expr;
-import nl.cwi.swat.liveql.ast.stat.Stat;
-import nl.cwi.swat.liveql.diff.Edit;
 
-public class ToComputed implements Edit<Stat> {
+public class ToComputed extends QLEdit {
 
 	private final Expr expr;
 
@@ -16,4 +14,8 @@ public class ToComputed implements Edit<Stat> {
 		return expr;
 	}
 
+	@Override
+	public void accept(Visitor visitor) {
+		visitor.visit(this);
+	}
 }

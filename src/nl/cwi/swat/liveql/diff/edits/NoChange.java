@@ -29,4 +29,9 @@ public class NoChange extends BlockEdit  {
 		patch.addKid(getOld().diff(getNew()));
 	}
 
+
+	@Override
+	public void accept(Visitor visitor) {
+		visitor.visit(this);
+	}
 }

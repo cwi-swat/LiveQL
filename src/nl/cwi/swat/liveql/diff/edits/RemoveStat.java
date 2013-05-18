@@ -16,4 +16,10 @@ public class RemoveStat extends BlockEdit {
 	public String toString() {
 		return "-(" + getPosition() + ", " + getRemoved() + ")";
 	}
+	
+
+	@Override
+	public void accept(Visitor visitor) {
+		visitor.visit(this);
+	}
 }

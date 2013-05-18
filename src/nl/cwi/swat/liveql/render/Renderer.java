@@ -9,7 +9,10 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Observer;
+import java.util.Stack;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -18,7 +21,6 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultHighlighter;
 import javax.swing.text.Document;
 
-import nl.cwi.swat.liveql.ast.expr.And;
 import nl.cwi.swat.liveql.ast.expr.Expr;
 import nl.cwi.swat.liveql.ast.expr.Ident;
 import nl.cwi.swat.liveql.ast.expr.Not;
@@ -40,23 +42,19 @@ public class Renderer implements Visitor {
 	private final State state;
 	private final JTextArea editor;
 	private final JFrame window;
-	private Expr cond;
+	private Stack<Expr> conds;
 	
-	private static void render(Expr cond, Stat stat, State state, Container panel, JTextArea editor, JFrame window) {
-		Renderer r = new Renderer(cond, state, panel, editor, window);
-		stat.accept(r);
+	public static void render(Form form, State state, Container panel, JTextArea editor, JFrame window) {
+		Renderer r = new Renderer(state, panel, editor, window);
+		form.getBody().accept(r);
 	}
 	
-	private Renderer(Expr cond, State state, Container panel, JTextArea editor, JFrame window) {
-		this.cond = cond;
+	private Renderer(State state, Container panel, JTextArea editor, JFrame window) {
+		this.conds = new Stack<Expr>();
 		this.state = state;
 		this.editor = editor;
 		this.window = window;
 		this.panel = panel; //new Container(new MigLayout("wrap 2", "[grow][grow]"));
-	}
-	
-	public static void render(Form form, State state, Container panel, JTextArea editor, JFrame window) {
-		render(new nl.cwi.swat.liveql.ast.expr.Bool(true, -1), form.getBody(), state, panel, editor, window);
 	}
 	
 	private void add(Component comp) {
@@ -99,8 +97,14 @@ public class Renderer implements Visitor {
 		return jlabel;
 	}
 	
-	private void registerDeps(Expr expr, Observer obs) {
+	private void registerDeps(List<Expr> exprs, Observer obs) {
 		// NB: this requires there be no cyclic deps.
+		for (Expr expr: exprs) {
+			registerDeps(expr, obs);
+		}
+	}
+	
+	private void registerDeps(Expr expr, Observer obs) {
 		for (Ident x: usedVars(expr)) {
 			state.addObserver(x, obs);
 		}
@@ -126,7 +130,7 @@ public class Renderer implements Visitor {
 		JLabel label = addLabel(stat.getLabel());
 		Control ctl = typeToWidget(stat.getType(), false);
 		registerDeps(stat.getExpr(), new ComputedObserver(stat, ctl, state));
-		registerDeps(cond, new ConditionObserver(cond, label, ctl.getComponent(), state, window)); 
+		registerDeps(conds, new ConditionObserver(activeConds(), label, ctl.getComponent(), state, window)); 
 		registerComputed(stat, ctl);
 		add(ctl.getComponent());
 	}
@@ -136,19 +140,25 @@ public class Renderer implements Visitor {
 		JLabel label = addLabel(stat.getLabel());
 		Control ctl = typeToWidget(stat.getType(), true);
 		registerAnswerable(stat, ctl);
-		registerDeps(cond, new ConditionObserver(cond, label, ctl.getComponent(), state, window)); 
+		registerDeps(conds, new ConditionObserver(activeConds(), label, ctl.getComponent(), state, window)); 
 		add(ctl.getComponent());
 	}
 	
 	@Override
 	public void visit(IfThen stat) {
-		render(new And(cond, stat.getCond()), stat.getBody(), state, panel, editor, window);
+		conds.push(stat.getCond());
+		stat.getBody().accept(this);
+		conds.pop();
 	}
 
 	@Override
 	public void visit(IfThenElse stat) {
-		render(new And(cond, stat.getCond()), stat.getBody(), state, panel, editor, window);
-		render(new And(cond, new Not(stat.getCond())), stat.getElseBody(), state, panel, editor, window);
+		conds.push(stat.getCond());
+		stat.getBody().accept(this);
+		conds.pop();
+		conds.push(new Not(stat.getCond()));
+		stat.getElseBody().accept(this);
+		conds.pop();
 	}
 
 	@Override
@@ -156,5 +166,11 @@ public class Renderer implements Visitor {
 		for (Stat s: stat.getStats()) {
 			s.accept(this);
 		}
+	}
+	
+	private List<Expr> activeConds() {
+		List<Expr> exprs = new ArrayList<Expr>();
+		exprs.addAll(conds);
+		return exprs;
 	}
 }

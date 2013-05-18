@@ -6,20 +6,21 @@ import java.util.List;
 
 import nl.cwi.swat.liveql.ast.stat.Stat;
 import nl.cwi.swat.liveql.diff.Edit;
+import nl.cwi.swat.liveql.diff.edits.QLEdit;
 
 public abstract class StatPatch implements PatchNode {
 	
-	private final List<Edit<Stat>> edits;
+	private final List<QLEdit> edits;
 
 	public StatPatch() {
-		this.edits = new ArrayList<Edit<Stat>>();
+		this.edits = new ArrayList<QLEdit>();
 	}
 	
-	public List<Edit<Stat>> getEdits() {
+	public List<QLEdit> getEdits() {
 		return edits;
 	}
 	
-	public void addEdit(Edit<Stat> edit) {
+	public void addEdit(QLEdit edit) {
 		edits.add(edit);
 	}
 	

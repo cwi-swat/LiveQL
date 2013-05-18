@@ -1,10 +1,8 @@
 package nl.cwi.swat.liveql.diff.edits;
 
 import nl.cwi.swat.liveql.ast.stat.Label;
-import nl.cwi.swat.liveql.ast.stat.Stat;
-import nl.cwi.swat.liveql.diff.Edit;
 
-public class SetLabel implements Edit<Stat> {
+public class SetLabel extends QLEdit {
 
 	private final Label label;
 	private final Label old;
@@ -21,5 +19,10 @@ public class SetLabel implements Edit<Stat> {
 	@Override
 	public String toString() {
 		return "label(" + old + " -> " + getLabel() + ")";
+	}
+	
+	@Override
+	public void accept(Visitor visitor) {
+		visitor.visit(this);
 	}
 }

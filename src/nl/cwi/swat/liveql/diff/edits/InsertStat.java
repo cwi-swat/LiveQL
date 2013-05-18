@@ -13,4 +13,8 @@ public class InsertStat extends BlockEdit {
 		return "+(" + getPosition() + ", " + getStatement() + ")";
 	}
 
+	@Override
+	public void accept(Visitor visitor) {
+		visitor.visit(this);
+	}
 }
