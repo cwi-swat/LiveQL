@@ -8,16 +8,16 @@ import nl.cwi.swat.liveql.ast.stat.Stat;
 import nl.cwi.swat.liveql.diff.Edit;
 
 
-public class AddToJTree implements Visitor {
+public class PatchToJTree implements Visitor {
 
 	private Stack<DefaultMutableTreeNode> stack;
 
 	public static void patchIntoJTree(FormPatch root, DefaultMutableTreeNode top) {
-		AddToJTree p2j = new AddToJTree(top);
+		PatchToJTree p2j = new PatchToJTree(top);
 		root.accept(p2j);
 	}
 	
-	private AddToJTree(DefaultMutableTreeNode top) {
+	private PatchToJTree(DefaultMutableTreeNode top) {
 		this.stack = new Stack<DefaultMutableTreeNode>();
 		stack.push(top);
 	}
