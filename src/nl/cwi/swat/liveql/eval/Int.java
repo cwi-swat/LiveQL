@@ -1,5 +1,7 @@
 package nl.cwi.swat.liveql.eval;
 
+import nl.cwi.swat.liveql.ast.types.Type;
+
 public class Int extends Value {
 	private final Integer value;
 	
@@ -106,6 +108,11 @@ public class Int extends Value {
 	@Override
 	protected Value geqInt(Int arg) {
 		return new Bool(arg.getValue() >= getValue());
+	}
+
+	@Override
+	public Value convert(Type type) {
+		return type.convertFromInt(this);
 	}
 	
 }

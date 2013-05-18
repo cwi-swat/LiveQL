@@ -1,5 +1,7 @@
 package nl.cwi.swat.liveql.eval;
 
+import nl.cwi.swat.liveql.ast.types.Type;
+
 public class Bool extends Value {
 	private final boolean value;
 
@@ -34,6 +36,11 @@ public class Bool extends Value {
 	@Override
 	public Value not() {
 		return new Bool(!getValue());
+	}
+
+	@Override
+	public Value convert(Type type) {
+		return type.convertFromBool(this);
 	}
 	
 }

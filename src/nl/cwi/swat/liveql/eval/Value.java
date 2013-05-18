@@ -1,6 +1,12 @@
 package nl.cwi.swat.liveql.eval;
 
+import nl.cwi.swat.liveql.ast.types.Type;
+
 public abstract class Value {
+	/* conversion */
+	
+	public abstract Value convert(Type type);
+	
 	
 	/* int ops */
 	

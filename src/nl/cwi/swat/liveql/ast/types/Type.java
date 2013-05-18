@@ -1,5 +1,7 @@
 package nl.cwi.swat.liveql.ast.types;
 
+import nl.cwi.swat.liveql.eval.Value;
+
 public abstract class Type {
 	
 	private final int line;
@@ -43,4 +45,10 @@ public abstract class Type {
 	public boolean isCompatibleToMoney() {
 		return false;
 	}
+
+	public abstract Value convertFromStr(nl.cwi.swat.liveql.eval.Str str);
+
+	public abstract Value convertFromInt(nl.cwi.swat.liveql.eval.Int n);
+
+	public abstract Value convertFromBool(nl.cwi.swat.liveql.eval.Bool bool);
 }

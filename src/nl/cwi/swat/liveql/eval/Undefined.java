@@ -1,5 +1,7 @@
 package nl.cwi.swat.liveql.eval;
 
+import nl.cwi.swat.liveql.ast.types.Type;
+
 public class Undefined extends Value {
 	public static final Undefined UNDEF = new Undefined();
 	
@@ -133,6 +135,11 @@ public class Undefined extends Value {
 	@Override
 	public boolean isDefined() {
 		return false;
+	}
+
+	@Override
+	public Value convert(Type type) {
+		return this;
 	}
 	
 
