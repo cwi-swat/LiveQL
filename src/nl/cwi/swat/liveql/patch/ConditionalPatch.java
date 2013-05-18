@@ -1,17 +1,14 @@
 package nl.cwi.swat.liveql.patch;
 
-import nl.cwi.swat.liveql.ast.stat.Conditional;
 
 public class ConditionalPatch extends StatPatch {
 	// NB: cannot make IfThen/IfThenElse subclasses because of invariant collections.
 	
-	private final Conditional source;
 	private StatPatch thenPatch;
 	private StatPatch elsePatch;
 
-	public ConditionalPatch(Conditional source) {
+	public ConditionalPatch() {
 		super();
-		this.source = source;
 		this.thenPatch = null;
 		this.elsePatch = new BlockPatch();
 	}
@@ -32,8 +29,12 @@ public class ConditionalPatch extends StatPatch {
 		this.thenPatch = thenPatch;
 	}
 	
-	public Conditional getSource() {
-		return source;
+	@Override
+	public boolean isIdentity() {
+		if (!super.isIdentity()) {
+			return false;
+		}
+		return getThenPatch().isIdentity() && getElsePatch().isIdentity();
 	}
 	
 	@Override

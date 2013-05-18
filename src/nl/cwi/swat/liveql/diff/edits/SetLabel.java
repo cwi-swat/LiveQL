@@ -1,15 +1,15 @@
 package nl.cwi.swat.liveql.diff.edits;
 
 import nl.cwi.swat.liveql.ast.stat.Label;
-import nl.cwi.swat.liveql.ast.stat.Question;
 
 public class SetLabel extends QuestionEdit {
 
 	private final Label label;
+	private final Label old;
 
-	public SetLabel(Question question, Label label) {
-		super(question);
+	public SetLabel(Label label, Label old) {
 		this.label = label;
+		this.old = old;
 	}
 
 	public Label getLabel() {
@@ -18,6 +18,6 @@ public class SetLabel extends QuestionEdit {
 	
 	@Override
 	public String toString() {
-		return "label(" + getQuestion().getLabel() + " -> " + getLabel() + ")";
+		return "label(" + old + " -> " + getLabel() + ")";
 	}
 }

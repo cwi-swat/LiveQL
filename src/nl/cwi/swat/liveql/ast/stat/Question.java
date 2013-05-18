@@ -41,13 +41,13 @@ public abstract class Question extends Stat {
 
 	protected void diffType(Question me, StatPatch patch) {
 		if (!getType().equals(me.getType())) {
-			patch.addEdit(new SetType(me, getType()));
+			patch.addEdit(new SetType(getType(), me.getType()));
 		}
 	}
 
 	protected void diffLabel(Question me, StatPatch patch) {
 		if (!getLabel().equals(me.getLabel())) {
-			patch.addEdit(new SetLabel(me, getLabel()));
+			patch.addEdit(new SetLabel(getLabel(), me.getLabel()));
 		}
 	}
 	

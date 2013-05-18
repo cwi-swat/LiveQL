@@ -23,7 +23,9 @@ public abstract class StatPatch implements PatchNode {
 		edits.add(edit);
 	}
 	
-	public abstract void accept(Visitor visitor);
+	public boolean isIdentity() {
+		return edits.isEmpty();
+	}
 	
 	@Override
 	public String toString() {

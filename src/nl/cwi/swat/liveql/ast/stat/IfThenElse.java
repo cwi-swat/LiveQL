@@ -29,13 +29,13 @@ public class IfThenElse extends Conditional {
 	
 	@Override
 	public StatPatch diff(Stat other) {
-		return other.diffToIfThenElse(this, new ConditionalPatch(this));
+		return other.diffToIfThenElse(this, new ConditionalPatch());
 	}
 	
 	@Override
 	public StatPatch diffToIfThen(IfThen me, ConditionalPatch patch) {
 		diffCond(me, patch);
-		patch.addEdit(new AddElse(me, getElseBody()));
+		patch.addEdit(new AddElse(getElseBody()));
 		patch.setThenPatch(me.getBody().diff(getBody()));
 		return patch;
 	}

@@ -1,16 +1,15 @@
 package nl.cwi.swat.liveql.diff.edits;
 
 import nl.cwi.swat.liveql.ast.expr.Expr;
-import nl.cwi.swat.liveql.ast.stat.Conditional;
 
 
 public class SetCondition extends ConditionalEdit {
-
 	private final Expr condition;
+	private final Expr old;
 
-	public SetCondition(Conditional statement, Expr condition) {
-		super(statement);
+	public SetCondition(Expr condition, Expr old) {
 		this.condition = condition;
+		this.old = old;
 	}
 
 	public Expr getCondition() {
@@ -19,7 +18,9 @@ public class SetCondition extends ConditionalEdit {
 	
 	@Override
 	public String toString() {
-		return "cond(" + getConditional().getCond() + " -> " + getCondition() + ")";
+		return "cond(" + old + " -> " + getCondition() + ")";
 	}
+	
+	
 	
 }

@@ -19,6 +19,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
+import javax.swing.JTree;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -28,15 +29,38 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultHighlighter;
 import javax.swing.text.Document;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeModel;
 
 import net.miginfocom.swing.MigLayout;
 import nl.cwi.swat.liveql.ast.form.Form;
 import nl.cwi.swat.liveql.check.Message;
 import nl.cwi.swat.liveql.parser.test.ParseError;
+import nl.cwi.swat.liveql.patch.AddToJTree;
+import nl.cwi.swat.liveql.patch.FormPatch;
+import nl.cwi.swat.liveql.patch.StatPatch;
 import nl.cwi.swat.liveql.render.Util.Pair;
 
 import org.antlr.runtime.RecognitionException;
 
+/*
+ * Stuff to think about
+ * - changes to text represented as diffs, then compute closure of this diff which
+ *   adds value changes (through dep propagation) *as* edits to the patch. I.o.w. this
+ *   computes the additional changes implied by the user edits. The effects are thus:
+ *   making something (in)visible, setting a value (as result of computation) 
+ *   The whole thing is then a transaction. Does this make undo easier? Otherwise
+ *   recomputation of values is in the "update state" process. Problem: these things
+ *   needs to be order somehow. First the addition/deletion of widgets etc. then the
+ *   propagation of values/visibilities on the new dependency graph. 
+ * - for application changes we can do the same: editing the value in a widget
+ *   leads to a single edit of that widget (setValue); the closure is everything that
+ *   depends on it.
+ * - can we have a single interpreter that just renders patches? Then the normal (initial) 
+ *   rendering would be a degenerate case: the patch containing a number of adds. 
+ * - how to deal with the (implicit) flattening of conditions of nested if statements? 
+ */
 
 public class App implements Runnable {
 	private final List<Message> theErrors;
@@ -47,6 +71,8 @@ public class App implements Runnable {
 	private final JTable errorMessages;
 	private final String source;
 	private State state;
+	private JTree diffTree;
+	private JScrollPane diffTreeView;
 	
 	public App(String resourcePath) throws IOException, ParseError {
 		this.theErrors = new ArrayList<Message>();
@@ -93,18 +119,27 @@ public class App implements Runnable {
 				2 * errorMessages.getRowHeight())); 
 
 		JScrollPane errorPane = new JScrollPane(errorMessages);
-		JPanel cp = new JPanel(new MigLayout("wrap 1"));
+		JPanel cp = new JPanel(new MigLayout("wrap 2"));
 
 		editor.getDocument().addDocumentListener(new SourceDocumentListener());
 
-		cp.add(editorPane, "w 100%-10, h 80%-10,span,wrap");
+		cp.add(editorPane, "w 60%-10, h 100%-10");
 		
-		cp.add(errorPane, "w 100%-10, h 20%-10,span,wrap");
+		DefaultMutableTreeNode top = new DefaultMutableTreeNode("DIFF");
+		diffTree = new JTree(top);
+		diffTreeView = new JScrollPane(diffTree);
+		diffTree.setShowsRootHandles(false);
+		cp.add(diffTreeView, "w 40%-10, span 1 1,wrap");
+		
+		cp.add(errorPane, "w 100%-10, h 40%-10,span,wrap");
+		
+		
+		
 		
 		errorMessages.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		errorMessages.getSelectionModel().addListSelectionListener(new ErrorListListener());
 		
-		editorFrame.setPreferredSize(new Dimension(600, 500));
+		editorFrame.setPreferredSize(new Dimension(700, 450));
 		editorFrame.setContentPane(cp);
 		editorFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		editorFrame.pack();
@@ -137,7 +172,6 @@ public class App implements Runnable {
 
 		@Override
 		public int getRowCount() {
-			// TODO Auto-generated method stub
 			return theErrors.size();
 		}
 		
@@ -165,8 +199,10 @@ public class App implements Runnable {
 			System.out.println("Reparsing");
 			try {
 				String text = doc.getText(0, doc.getLength());
+				Form form2;
 				try {
-					form = parse(text);
+					form2 = parse(text);
+					//form = form2;
 				}
 				catch (RuntimeException e) {
 					if (e.getCause() instanceof RecognitionException) {
@@ -178,12 +214,28 @@ public class App implements Runnable {
 					throw e;
 				}
 				theErrors.clear();
-				checkStat(form.getBody(), theErrors);
+				checkStat(form2.getBody(), theErrors);
 				((ErrorTableModel)errorMessages.getModel()).fireTableDataChanged();
 				if (!theErrors.isEmpty()) {
 					return;
 				}
-
+				FormPatch diff = form.diff(form2);
+				if (diff.isIdentity()) {
+					return;
+				}
+				System.out.println(diff);
+				
+				DefaultTreeModel model = (DefaultTreeModel) diffTree.getModel();
+				DefaultMutableTreeNode top = (DefaultMutableTreeNode)model.getRoot();
+				top.removeAllChildren();
+				AddToJTree.patchIntoJTree(diff, top);
+				//model.insertNodeInto(top, top, top.getChildCount());
+				model.reload();
+				for (int i = 0; i < diffTree.getRowCount(); i++) {
+			         diffTree.expandRow(i);
+				}
+				
+				form = form2;
 				renderFrame.getContentPane().removeAll();
 				State newState = new State(state.getEnv());
 				Renderer.render(form, newState, 

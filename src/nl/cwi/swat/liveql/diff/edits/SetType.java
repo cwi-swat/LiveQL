@@ -1,15 +1,15 @@
 package nl.cwi.swat.liveql.diff.edits;
 
-import nl.cwi.swat.liveql.ast.stat.Question;
 import nl.cwi.swat.liveql.ast.types.Type;
 
 public class SetType extends QuestionEdit {
 
 	private final Type type;
+	private final Type old;
 
-	public SetType(Question question, Type type) {
-		super(question);
+	public SetType(Type type, Type old) {
 		this.type = type;
+		this.old = old;
 	}
 	
 	public Type getType() {
@@ -18,7 +18,7 @@ public class SetType extends QuestionEdit {
 	
 	@Override
 	public String toString() {
-		return "type(" + getQuestion().getType() + " -> " + getType() + ")";
+		return "type(" + old + " -> " + getType() + ")";
 	}
 
 }

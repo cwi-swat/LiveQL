@@ -33,7 +33,7 @@ public class Computed extends Question {
 	
 	@Override
 	public StatPatch diff(Stat other) {
-		return other.diffToComputed(this, new QuestionPatch(this));
+		return other.diffToComputed(this, new QuestionPatch());
 	}
 	
 	@Override
@@ -41,7 +41,7 @@ public class Computed extends Question {
 		diffLabel(me, patch);
 		diffType(me, patch);
 		if (!getExpr().equals(me.getExpr())) {
-			patch.addEdit(new SetExpression(me, getExpr()));
+			patch.addEdit(new SetExpression(getExpr(), me.getExpr()));
 		}
 		return patch;
 	}
@@ -50,7 +50,7 @@ public class Computed extends Question {
 	public StatPatch diffToAnswerable(Answerable me, QuestionPatch patch) {
 		diffLabel(me, patch);
 		diffType(me, patch);
-		patch.addEdit(new ToComputed(me, getExpr()));
+		patch.addEdit(new ToComputed(getExpr()));
 		return patch;
 	}
 	

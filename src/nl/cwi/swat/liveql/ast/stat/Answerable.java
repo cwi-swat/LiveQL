@@ -23,7 +23,7 @@ public class Answerable extends Question {
 
 	@Override
 	public StatPatch diff(Stat other) {
-		return other.diffToAnswerable(this, new QuestionPatch(this));
+		return other.diffToAnswerable(this, new QuestionPatch());
 	}
 	
 	@Override
@@ -37,7 +37,7 @@ public class Answerable extends Question {
 	public StatPatch diffToComputed(Computed me, QuestionPatch patch) {
 		diffLabel(me, patch);
 		diffType(me, patch);
-		patch.addEdit(new ToAnswerable(me));
+		patch.addEdit(new ToAnswerable(me.getExpr()));
 		return patch;
 	}
 

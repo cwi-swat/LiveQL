@@ -33,7 +33,7 @@ public abstract class Conditional extends Stat {
 
 	protected void diffCond(Conditional me, ConditionalPatch patch) {
 		if (!getCond().equals(me.getCond())) {
-			patch.addEdit(new SetCondition(me, getCond()));
+			patch.addEdit(new SetCondition(getCond(), me.getCond()));
 		}
 	}
 	

@@ -26,6 +26,19 @@ public class BlockPatch extends StatPatch {
 	}
 	
 	@Override
+	public boolean isIdentity() {
+		if (!super.isIdentity()) {
+			return false;
+		}
+		for (StatPatch kid: getKids()) {
+			if (!kid.isIdentity()) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	@Override
 	public boolean isEmpty() {
 		return super.isEmpty() && getKids().isEmpty();
 	}

@@ -20,4 +20,10 @@ public class Apply implements Visitor {
 
 	}
 
+	@Override
+	public void visit(FormPatch patch) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

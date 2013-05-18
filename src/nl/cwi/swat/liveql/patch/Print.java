@@ -71,12 +71,18 @@ public class Print implements Visitor {
 	@Override
 	public void visit(QuestionPatch patch) {
 		if (patch.getEdits().isEmpty()) {
+			print("NOP");
 			return;
 		}
-		print("question " + patch.getSource().getName());
+		print("question");
 		indent();
 		printEdits(patch);
 		dedent();
+	}
+
+	@Override
+	public void visit(FormPatch patch) {
+		patch.getBody().accept(this);
 	}
 
 }

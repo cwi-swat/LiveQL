@@ -56,6 +56,7 @@ public class TypeToControl implements Visitor<Control, Boolean> {
 	}
 
 	
+	
 	abstract class TextFieldWidget extends Control {
 		public TextFieldWidget(JTextField component, int line) {
 			super(component);
@@ -89,7 +90,7 @@ public class TypeToControl implements Visitor<Control, Boolean> {
 	
 	@Override
 	public Control visit(Int type, Boolean editable) {
-		final JTextField tf = new JTextField(20);
+		final JTextField tf = new JTextField(3);
 		tf.setEditable(editable);
 		return new TextFieldWidget(tf, type.getLine()) {
 			@Override

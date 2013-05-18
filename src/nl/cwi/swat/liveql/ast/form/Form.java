@@ -6,6 +6,7 @@ import nl.cwi.swat.liveql.ast.ASTNode;
 import nl.cwi.swat.liveql.ast.expr.Ident;
 import nl.cwi.swat.liveql.ast.stat.Block;
 import nl.cwi.swat.liveql.ast.stat.Stat;
+import nl.cwi.swat.liveql.patch.FormPatch;
 
 public class Form implements ASTNode, Iterable<Stat> {
 
@@ -33,6 +34,10 @@ public class Form implements ASTNode, Iterable<Stat> {
 	@Override
 	public int getLine() {
 		return getName().getLine();
+	}
+	
+	public FormPatch diff(Form other) {
+		return new FormPatch(body.diff(other.getBody()));
 	}
 
 
