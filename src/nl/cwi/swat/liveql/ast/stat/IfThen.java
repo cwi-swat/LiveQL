@@ -2,7 +2,8 @@ package nl.cwi.swat.liveql.ast.stat;
 
 import nl.cwi.swat.liveql.ast.expr.Expr;
 import nl.cwi.swat.liveql.diff.edits.RemoveElse;
-import nl.cwi.swat.liveql.patch.ConditionalPatch;
+import nl.cwi.swat.liveql.patch.IfThenElsePatch;
+import nl.cwi.swat.liveql.patch.IfThenPatch;
 import nl.cwi.swat.liveql.patch.StatPatch;
 
 public class IfThen extends Conditional {
@@ -22,21 +23,19 @@ public class IfThen extends Conditional {
 	
 	@Override
 	public StatPatch diff(Stat other) {
-		return other.diffToIfThen(this, new ConditionalPatch());
+		return other.diffToIfThen(this, new IfThenPatch());
 	}
 	
-	@Override
-	public StatPatch diffToIfThen(IfThen me, ConditionalPatch patch) {
+	public StatPatch diffToIfThen(IfThen me, IfThenPatch patch) {
 		diffCond(me, patch);
-		patch.setThenPatch(me.getBody().diff(getBody()));
+		patch.setBodyPatch(me.getBody().diff(getBody()));
 		return patch;
 	}
 
-	@Override
-	public StatPatch diffToIfThenElse(IfThenElse me, ConditionalPatch patch) {
+	public StatPatch diffToIfThenElse(IfThenElse me, IfThenElsePatch patch) {
 		diffCond(me, patch);
-		patch.addEdit(new RemoveElse(me));
-		patch.setThenPatch(me.getBody().diff(getBody()));
+		patch.addEdit(new RemoveElse(me.getElseBody()));
+		patch.setBodyPatch(me.getBody().diff(getBody()));
 		return patch;
 	}
 

@@ -33,14 +33,29 @@ public class AddToJTree implements Visitor {
 	}
 
 	@Override
-	public void visit(ConditionalPatch patch) {
+	public void visit(IfThenPatch patch) {
 		DefaultMutableTreeNode node = new DefaultMutableTreeNode("if");
 		for (Edit<Stat> e: patch.getEdits()) {
 			node.add(new DefaultMutableTreeNode(e.toString()));
 		}
 		DefaultMutableTreeNode thn = new DefaultMutableTreeNode("then");
 		stack.push(thn);
-		patch.getThenPatch().accept(this);
+		patch.getBodyPatch().accept(this);
+		stack.pop();
+		
+		node.add(thn);
+		stack.peek().add(node);
+	}
+	
+	@Override
+	public void visit(IfThenElsePatch patch) {
+		DefaultMutableTreeNode node = new DefaultMutableTreeNode("if");
+		for (Edit<Stat> e: patch.getEdits()) {
+			node.add(new DefaultMutableTreeNode(e.toString()));
+		}
+		DefaultMutableTreeNode thn = new DefaultMutableTreeNode("then");
+		stack.push(thn);
+		patch.getBodyPatch().accept(this);
 		stack.pop();
 		
 		DefaultMutableTreeNode els = new DefaultMutableTreeNode("else");

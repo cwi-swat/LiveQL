@@ -1,10 +1,14 @@
 package nl.cwi.swat.liveql.ast.stat;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
 import nl.cwi.swat.liveql.patch.BlockPatch;
+import nl.cwi.swat.liveql.patch.IfThenElsePatch;
+import nl.cwi.swat.liveql.patch.IfThenPatch;
+import nl.cwi.swat.liveql.patch.QuestionPatch;
 import nl.cwi.swat.liveql.patch.StatPatch;
 
 public class Block extends Stat {
@@ -79,6 +83,42 @@ public class Block extends Stat {
 	@Override
 	public StatPatch diff(Stat other) {
 		return other.diffToBlock(this, new BlockPatch());
+	}
+	
+	@Override
+	public StatPatch diffToAnswerable(Answerable me, QuestionPatch _) {
+		return diffToBlock(me);
+	}
+	
+	
+	@Override
+	public StatPatch diffToComputed(Computed me, QuestionPatch _) {
+		return diffToBlock(me);
+	}
+	
+	@Override
+	public StatPatch diffToIfThen(IfThen me, IfThenElsePatch _) {
+		return diffToBlock(me);
+	}
+	
+	@Override
+	public StatPatch diffToIfThen(IfThen me, IfThenPatch _) {
+		return diffToBlock(me);
+	}
+	
+	@Override
+	public StatPatch diffToIfThenElse(IfThenElse me, IfThenElsePatch _) {
+		return diffToBlock(me);
+	}
+	
+	@Override
+	public StatPatch diffToIfThenElse(IfThenElse me, IfThenPatch _) {
+		return diffToBlock(me);
+	}
+
+	private StatPatch diffToBlock(Stat me) {
+		Block b = new Block(Collections.<Stat>singletonList(me), me.getLine());
+		return b.diff(this);
 	}
 	
 	@Override

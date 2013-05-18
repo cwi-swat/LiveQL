@@ -11,6 +11,8 @@ import nl.cwi.swat.liveql.diff.edits.BlockEdit;
 import nl.cwi.swat.liveql.diff.edits.BlockEditFactory;
 import nl.cwi.swat.liveql.patch.BlockPatch;
 import nl.cwi.swat.liveql.patch.ConditionalPatch;
+import nl.cwi.swat.liveql.patch.IfThenElsePatch;
+import nl.cwi.swat.liveql.patch.IfThenPatch;
 import nl.cwi.swat.liveql.patch.QuestionPatch;
 import nl.cwi.swat.liveql.patch.StatPatch;
 
@@ -39,11 +41,19 @@ public abstract class Stat implements ASTNode, Iterable<Stat>, Match<Stat> {
 		throw new UnsupportedOperationException();
 	}
 
-	public StatPatch diffToIfThenElse(IfThenElse me, ConditionalPatch patch) {
+	public StatPatch diffToIfThenElse(IfThenElse me, IfThenElsePatch patch) {
 		throw new UnsupportedOperationException();
 	}
 
-	public StatPatch diffToIfThen(IfThen me, ConditionalPatch patch) {
+	public StatPatch diffToIfThenElse(IfThenElse me, IfThenPatch patch) {
+		throw new UnsupportedOperationException();
+	}
+
+	public StatPatch diffToIfThen(IfThen me, IfThenPatch patch) {
+		throw new UnsupportedOperationException();
+	}
+
+	public StatPatch diffToIfThen(IfThen me, IfThenElsePatch patch) {
 		throw new UnsupportedOperationException();
 	}
 

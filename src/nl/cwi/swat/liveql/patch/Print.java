@@ -43,23 +43,34 @@ public class Print implements Visitor {
 	}
 
 	@Override
-	public void visit(ConditionalPatch patch) {
+	public void visit(IfThenPatch patch) {
 		print("if");
 		indent();
 		printEdits(patch);
 		dedent();
 		print("{");
 		indent();
-		patch.getThenPatch().accept(this);
+		patch.getBodyPatch().accept(this);
 		dedent();
 		print("}");
-		if (!patch.getElsePatch().isEmpty()) { 
-			print("else {");
-			indent();
-			patch.getElsePatch().accept(this);
-			dedent();
-			print("}");
-		}
+	}
+
+	@Override
+	public void visit(IfThenElsePatch patch) {
+		print("if");
+		indent();
+		printEdits(patch);
+		dedent();
+		print("{");
+		indent();
+		patch.getBodyPatch().accept(this);
+		dedent();
+		print("}");
+		print("else {");
+		indent();
+		patch.getElsePatch().accept(this);
+		dedent();
+		print("}");
 	}
 
 	private void printEdits(StatPatch patch) {
