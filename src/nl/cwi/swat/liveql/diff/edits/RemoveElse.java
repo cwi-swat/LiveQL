@@ -3,8 +3,9 @@ package nl.cwi.swat.liveql.diff.edits;
 import nl.cwi.swat.liveql.ast.stat.IfThen;
 import nl.cwi.swat.liveql.ast.stat.IfThenElse;
 import nl.cwi.swat.liveql.ast.stat.Stat;
+import nl.cwi.swat.liveql.diff.Edit;
 
-public class RemoveElse extends IfThenElseEdit {
+public class RemoveElse implements Edit<Stat> {
 
 	private final Stat old;
 

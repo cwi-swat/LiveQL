@@ -1,8 +1,10 @@
 package nl.cwi.swat.liveql.diff.edits;
 
 import nl.cwi.swat.liveql.ast.stat.Label;
+import nl.cwi.swat.liveql.ast.stat.Stat;
+import nl.cwi.swat.liveql.diff.Edit;
 
-public class SetLabel extends QuestionEdit {
+public class SetLabel implements Edit<Stat> {
 
 	private final Label label;
 	private final Label old;

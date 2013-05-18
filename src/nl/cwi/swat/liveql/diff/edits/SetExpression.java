@@ -2,8 +2,10 @@ package nl.cwi.swat.liveql.diff.edits;
 
 import nl.cwi.swat.liveql.ast.expr.Expr;
 import nl.cwi.swat.liveql.ast.stat.Computed;
+import nl.cwi.swat.liveql.ast.stat.Stat;
+import nl.cwi.swat.liveql.diff.Edit;
 
-public class SetExpression extends ComputedEdit {
+public class SetExpression implements Edit<Stat> {
 
 	private final Expr expr;
 	private final Expr old;

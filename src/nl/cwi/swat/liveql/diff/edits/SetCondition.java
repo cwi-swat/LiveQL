@@ -1,9 +1,11 @@
 package nl.cwi.swat.liveql.diff.edits;
 
 import nl.cwi.swat.liveql.ast.expr.Expr;
+import nl.cwi.swat.liveql.ast.stat.Stat;
+import nl.cwi.swat.liveql.diff.Edit;
 
 
-public class SetCondition extends ConditionalEdit {
+public class SetCondition implements Edit<Stat> {
 	private final Expr condition;
 	private final Expr old;
 
