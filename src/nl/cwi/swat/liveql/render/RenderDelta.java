@@ -202,8 +202,10 @@ public class RenderDelta implements
 	}
 	
 	private void removeCurrentWidgetAndLabel() {
+		System.out.println("Label = " + panel.getComponent(currentLabelIndex()));
+		System.out.println("Widget = " + panel.getComponent(currentWidgetIndex()));
 		panel.remove(currentLabelIndex());
-		panel.remove(currentWidgetIndex());
+		panel.remove(currentWidgetIndex() - 1);
 	}
 	
 	private void updateCurrentWidget(JComponent comp) {
