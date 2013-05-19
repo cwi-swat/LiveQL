@@ -55,6 +55,7 @@ public class RenderDelta implements
 			state.trigger(x.getName());
 		}
 		for (QState x: renderer.toBeRefreshed) {
+			System.out.println("Refreshing: " + x.getName());
 			x.updateVisibility(state);
 		}
 
@@ -218,6 +219,7 @@ public class RenderDelta implements
 	}
 	
 	private void removeCurrentWidgetAndLabel() {
+		state.remove(question);
 		panel.remove(currentLabelIndex());
 		// -1 because label has just been removed
 		panel.remove(currentWidgetIndex() - 1);
