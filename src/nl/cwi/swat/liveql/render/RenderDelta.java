@@ -46,6 +46,7 @@ public class RenderDelta implements
 	private State state;
 	private Container panel;
 	private List<QState> dirty;
+	private List<QState> toBeRefreshed;
 	
 	public static void render(FormPatch patch, State state, Container panel) {
 		RenderDelta renderer = new RenderDelta(state, panel);
@@ -53,12 +54,17 @@ public class RenderDelta implements
 		for (QState x: renderer.dirty) {
 			state.trigger(x.getName());
 		}
+		for (QState x: renderer.toBeRefreshed) {
+			x.updateVisibility(state);
+		}
+
 	}
 	
 	private RenderDelta(State state, Container panel) {
 		this.state = state;
 		this.panel = panel;
 		this.dirty = new ArrayList<QState>();
+		this.toBeRefreshed = new ArrayList<QState>();
 	}
 	
 	@Override
@@ -101,6 +107,11 @@ public class RenderDelta implements
 	public void visit(QuestionPatch patch) {
 		for (QLEdit e: patch.getEdits()) {
 			e.accept(this);
+		}
+		QState q = state.getState(question);
+		boolean condsChanged = q.setConds(activeConds());
+		if (condsChanged) {
+			toBeRefreshed.add(q);
 		}
 		question++; // move to next
 	}

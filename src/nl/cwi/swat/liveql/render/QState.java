@@ -119,8 +119,12 @@ class QState {
 		widget.setEditable(isEditable());
 	}
 	
-	public void setConds(List<Expr> conds) {
+	public boolean setConds(List<Expr> conds) {
+		if (conds.equals(this.conds)) {
+			return false;
+		}
 		this.conds = conds;
+		return true;
 	}
 	
 	public void setValue(Value value) {
