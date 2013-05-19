@@ -30,10 +30,12 @@ public class IfThenElse extends Conditional {
 	
 	@Override
 	public StatPatch diff(Stat other) {
-		return other.diffToIfThenElse(this, new IfThenElsePatch());
+		return other.diffToIfThenElse(this, new IfThenElsePatch(getCond()));
 	}
 	
 	public StatPatch diffToIfThen(IfThen me, IfThenPatch patch) {
+		// NB: it's important that diffCond comes first,
+		// since add else depends on the conditions that's been changed.
 		diffCond(me, patch);
 		patch.addEdit(new AddElse(getElseBody()));
 		patch.setBodyPatch(me.getBody().diff(getBody()));

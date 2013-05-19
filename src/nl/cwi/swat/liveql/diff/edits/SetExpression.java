@@ -17,6 +17,10 @@ public class SetExpression extends QLEdit {
 		return expr;
 	}
 	
+	public Expr getOld() {
+		return old;
+	}
+	
 	@Override
 	public String toString() {
 		return "expr(" + old + " -> " + getExpr() + ")";

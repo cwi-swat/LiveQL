@@ -1,91 +1,98 @@
 package nl.cwi.swat.liveql.render;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Observable;
-import java.util.Observer;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 import nl.cwi.swat.liveql.ast.expr.Ident;
-import nl.cwi.swat.liveql.eval.Undefined;
+import nl.cwi.swat.liveql.eval.Env;
 import nl.cwi.swat.liveql.eval.Value;
 
-public class State {
-	private final Map<Ident, Value> env;
-	private final Map<Ident, Observable> observables;
-	private final HashMap<Ident, Control> controls;
+public class State implements Iterable<QState>, Env {
+	private List<QState> qStates;
+	private List<Widget> widgets;
 	
-	public State(Map<Ident, Value> env) {
-		this.env = env;
-		this.observables = new HashMap<Ident, Observable>();
-		this.controls = new HashMap<Ident, Control>();
-	}
-
 	public State() {
-		this(new HashMap<Ident, Value>());
-	}
-
-	public void addObserver(Ident x, Observer obs) {
-		observables.get(x).addObserver(obs);
+		qStates = new ArrayList<QState>();
+		widgets = new ArrayList<Widget>();
 	}
 	
-	public void putObservable(Ident x, Observable obs) {
-		observables.put(x,  obs);
+	public void remove(int i) {
+		qStates.remove(i);
+		widgets.remove(i);
 	}
 
-	public void putValue(Ident name, Value value) {
-		env.put(name, value);
+	@Override
+	public Iterator<QState> iterator() {
+		return qStates.iterator();
 	}
 	
-	public Value getValue(Ident name) {
-		if (hasValue(name)) {
-			return env.get(name);
-		}
-		return Undefined.UNDEF;
+	public Widget getWidget(int i) {
+		return widgets.get(i);
 	}
 	
-	public Map<Ident, Value> getEnv() {
-		return env;
+	public QState getState(int i) {
+		return qStates.get(i);
 	}
-
-	public void notify(Ident name) {
-		observables.get(name).notifyObservers();		
-	}
-
-	public boolean hasValue(Ident name) {
-		return env.containsKey(name);
-	}
-
-	public void merge(State old) {
-		// TODO: deal with type conversions!
-		//getEnv().putAll(old.getEnv());
-		Map<Ident, Value> oldEnv = old.getEnv();
-		for (Ident var: oldEnv.keySet()) {
-			System.out.println("OLD: " + var + " = " + oldEnv.get(var));
-			if (!controls.containsKey(var)) {
-				System.out.println("I don't have a " + var);
-				// if I do not have it, it is deleted
-				continue;
-			}
-			
-			if (oldEnv.get(var) != Undefined.UNDEF) {
-				putValue(var, oldEnv.get(var));
-				// Hmm, wouldn't want to do this for computed 
-				// fields. It will now be overriden when triggering.
-				controls.get(var).setValue(oldEnv.get(var));
+	
+	public QState getState(Ident name) {
+		for (QState q: this) {
+			if (q.getName().equals(name)) {
+				return q;
 			}
 		}
-		for (Ident var: observables.keySet()) {
-//			if (hasValue(var)) {
-//				// only update non-computed controls.
-//				controls.get(var).setValue(getValue(var));
-//			}
-			observables.get(var).notifyObservers();
+		return null;
+	}
+
+	// Slow, but could be optimized.
+	@Override
+	public boolean containsKey(Ident var) {
+		for (QState q: this) {
+			if (q.getName().equals(var)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public Value get(Ident var) {
+		return getState(var).getValue();
+	}
+	
+
+	
+	public void trigger(Ident x) {
+		Set<Ident> todo = new HashSet<Ident>();
+		todo.add(x);
+		while (!todo.isEmpty()) {
+			x = todo.iterator().next();
+			todo.remove(x);
+			for (QState q: this) {
+				if (q.hasDataDependencyOn(x)) {
+					boolean changed = q.recompute(this);
+					if (changed) {
+						todo.add(q.getName());
+					}
+				}
+				if (q.hasControlDependencyOn(x)) {
+					q.updateVisibility(this);
+				}
+			}
 		}
 	}
 
-	public void putControl(Ident name, Control ctl) {
-		controls.put(name, ctl);
+	public void add(int index, QState q, Widget w) {
+		qStates.add(index, q);
+		widgets.add(index, w);
 	}
-	
+
+	public void replace(int index, QState q, Widget w) {
+		qStates.remove(index);
+		widgets.remove(index);
+		add(index, q, w);
+	}
 	
 }

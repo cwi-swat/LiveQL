@@ -17,6 +17,10 @@ public class RemoveElse extends QLEdit {
 		return "-else()";
 	}
 	
+	public Stat getOld() {
+		return old;
+	}
+	
 	public IfThen apply(IfThenElse ite) {
 		return new IfThen(ite.getCond(), ite.getBody());
 	}

@@ -31,15 +31,13 @@ import javax.swing.text.DefaultHighlighter;
 import javax.swing.text.Document;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeModel;
 
 import net.miginfocom.swing.MigLayout;
 import nl.cwi.swat.liveql.ast.form.Form;
 import nl.cwi.swat.liveql.check.Message;
 import nl.cwi.swat.liveql.parser.test.ParseError;
-import nl.cwi.swat.liveql.patch.PatchToJTree;
 import nl.cwi.swat.liveql.patch.FormPatch;
-import nl.cwi.swat.liveql.patch.StatPatch;
+import nl.cwi.swat.liveql.patch.PatchToJTree;
 import nl.cwi.swat.liveql.render.Util.Pair;
 
 import org.antlr.runtime.RecognitionException;
@@ -84,7 +82,6 @@ public class App implements Runnable {
 		this.renderFrame = new JFrame(form.getName().getName());
 		this.editorFrame = new JFrame(form.getName().getName());
 		this.editor = new JTextArea(40, 60);
-		state = new State();
 	}
 	
 	public static void main(String[] args) {
@@ -152,7 +149,8 @@ public class App implements Runnable {
 		renderFrame.setLayout(new FlowLayout());
 		Container panel = renderFrame.getContentPane();
 		panel.setLayout(new MigLayout("wrap 2", "[grow][grow]"));
-		Renderer.render(form, state, panel, editor, renderFrame);
+		RenderDelta renderer = new RenderDelta(state, panel);
+		form.getBody().accept(renderer);
 		//renderFrame.getContentPane().add(theGui.getPanel());
 		renderFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		renderFrame.pack();
@@ -236,12 +234,14 @@ public class App implements Runnable {
 				}
 				
 				form = form2;
-				renderFrame.getContentPane().removeAll();
-				State newState = new State(state.getEnv());
-				Renderer.render(form, newState, 
-						renderFrame.getContentPane(), editor, renderFrame);
-				newState.merge(state);
-				state = newState;
+				//renderFrame.getContentPane().removeAll();
+				//State newState = new State(state.getEnv());
+//				Renderer.render(form, newState, 
+//						renderFrame.getContentPane(), editor, renderFrame);
+//				newState.merge(state);
+//				state = newState;
+				RenderDelta renderer = new RenderDelta(state, renderFrame.getContentPane());
+				diff.accept(renderer);
 				//theGui.setState(gui.getState());
 				//renderFrame.getContentPane().add(gui.getPanel());
 				renderFrame.pack();

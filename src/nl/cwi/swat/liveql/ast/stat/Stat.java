@@ -61,6 +61,7 @@ public abstract class Stat implements ASTNode, Iterable<Stat>, Match<Stat> {
 	public BlockPatch diffToBlock(Block me, BlockPatch patch) {
 		LCSMatrix<Stat> lcs = new LCSMatrix<Stat>(me, this);
 		for (Edit<Stat> edit: lcs.getEdits(new BlockEditFactory())) {
+			System.out.println(edit);
 			((BlockEdit)edit).register(patch);
 		}
 		return patch;

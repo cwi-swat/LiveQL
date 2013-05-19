@@ -23,7 +23,7 @@ public class IfThen extends Conditional {
 	
 	@Override
 	public StatPatch diff(Stat other) {
-		return other.diffToIfThen(this, new IfThenPatch());
+		return other.diffToIfThen(this, new IfThenPatch(getCond()));
 	}
 	
 	public StatPatch diffToIfThen(IfThen me, IfThenPatch patch) {

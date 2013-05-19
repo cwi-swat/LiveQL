@@ -5,8 +5,20 @@ import java.io.Writer;
 
 import nl.cwi.swat.liveql.ast.stat.Stat;
 import nl.cwi.swat.liveql.diff.Edit;
+import nl.cwi.swat.liveql.diff.edits.AddElse;
+import nl.cwi.swat.liveql.diff.edits.InsertStat;
+import nl.cwi.swat.liveql.diff.edits.NoChange;
+import nl.cwi.swat.liveql.diff.edits.QLEdit;
+import nl.cwi.swat.liveql.diff.edits.RemoveElse;
+import nl.cwi.swat.liveql.diff.edits.RemoveStat;
+import nl.cwi.swat.liveql.diff.edits.SetCondition;
+import nl.cwi.swat.liveql.diff.edits.SetExpression;
+import nl.cwi.swat.liveql.diff.edits.SetLabel;
+import nl.cwi.swat.liveql.diff.edits.SetType;
+import nl.cwi.swat.liveql.diff.edits.ToAnswerable;
+import nl.cwi.swat.liveql.diff.edits.ToComputed;
 
-public class Print implements Visitor {
+public class Print implements Visitor, nl.cwi.swat.liveql.diff.edits.Visitor {
 	private int indent = 0;
 	private final Writer writer;
 	
@@ -37,9 +49,6 @@ public class Print implements Visitor {
 	@Override
 	public void visit(BlockPatch patch) {
 		printEdits(patch);
-		for (StatPatch p: patch.getKids()) {
-			p.accept(this);
-		}
 	}
 
 	@Override
@@ -74,8 +83,8 @@ public class Print implements Visitor {
 	}
 
 	private void printEdits(StatPatch patch) {
-		for (Edit<Stat> e: patch.getEdits()) {
-			print(e);
+		for (QLEdit e: patch.getEdits()) {
+			e.accept(this);
 		}
 	}
 
@@ -94,6 +103,72 @@ public class Print implements Visitor {
 	@Override
 	public void visit(FormPatch patch) {
 		patch.getBody().accept(this);
+	}
+
+	@Override
+	public void visit(AddElse e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(InsertStat e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(NoChange e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(RemoveElse e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(RemoveStat e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(SetCondition e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(SetExpression e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(SetLabel e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(SetType e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(ToAnswerable e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(ToComputed e) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

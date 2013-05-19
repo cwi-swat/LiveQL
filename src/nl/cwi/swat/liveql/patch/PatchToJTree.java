@@ -6,6 +6,8 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 import nl.cwi.swat.liveql.ast.stat.Stat;
 import nl.cwi.swat.liveql.diff.Edit;
+import nl.cwi.swat.liveql.diff.edits.NoChange;
+import nl.cwi.swat.liveql.diff.edits.QLEdit;
 
 
 public class PatchToJTree implements Visitor {
@@ -24,11 +26,14 @@ public class PatchToJTree implements Visitor {
 	
 	@Override
 	public void visit(BlockPatch patch) {
-		for (Edit<Stat> e: patch.getEdits()) {
-			stack.peek().add(new DefaultMutableTreeNode(e.toString()));
-		}
-		for (StatPatch p: patch.getKids()) {
-			p.accept(this);
+		for (QLEdit e: patch.getEdits()) {
+			// temp hack
+			if (e instanceof NoChange) {
+				((NoChange)e).getPatch().accept(this);
+			}
+			else {
+				stack.peek().add(new DefaultMutableTreeNode(e.toString()));
+			}
 		}
 	}
 

@@ -1,8 +1,5 @@
 package nl.cwi.swat.liveql.eval;
 
-import java.util.Collections;
-import java.util.Map;
-
 import nl.cwi.swat.liveql.ast.expr.Add;
 import nl.cwi.swat.liveql.ast.expr.And;
 import nl.cwi.swat.liveql.ast.expr.Bool;
@@ -26,10 +23,10 @@ import nl.cwi.swat.liveql.ast.expr.Visitor;
 
 public class Eval implements Visitor<Value> {
 	
-	private final Map<Ident, Value> env;
+	private final Env env;
 
-	public Eval(Map<Ident, Value> env) {
-		this.env = Collections.unmodifiableMap(env);
+	public Eval(Env env) {
+		this.env = env;
 	}
 
 	

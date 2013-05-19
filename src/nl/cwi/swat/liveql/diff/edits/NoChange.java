@@ -2,31 +2,29 @@ package nl.cwi.swat.liveql.diff.edits;
 
 import nl.cwi.swat.liveql.ast.stat.Stat;
 import nl.cwi.swat.liveql.patch.BlockPatch;
+import nl.cwi.swat.liveql.patch.StatPatch;
 
 public class NoChange extends BlockEdit  {
-	private final Stat old;
+	private StatPatch patch;
 
 	public NoChange(int position, Stat old, Stat nw) {
 		super(position, nw);
-		this.old = old;
+		this.patch = old.diff(nw);
 	}
 	
-	public Stat getOld() {
-		return old;
-	}
 	
-	public Stat getNew() {
-		return getStatement();
+	public StatPatch getPatch() {
+		return patch;
 	}
 	
 	@Override
 	public String toString() {
-		return "=(" + getPosition() + ", " + getOld() + ", " + getNew() + ")";
+		return "=(" +patch + ")";
 	}
 	
 	@Override
 	public void register(BlockPatch patch) {
-		patch.addKid(getOld().diff(getNew()));
+		patch.addEdit(this);
 	}
 
 

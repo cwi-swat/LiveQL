@@ -1,10 +1,12 @@
 package nl.cwi.swat.liveql.patch;
 
+import nl.cwi.swat.liveql.ast.expr.Expr;
+
 public class IfThenElsePatch extends ConditionalPatch {
 	private StatPatch elsePatch;
 
-	public IfThenElsePatch() {
-		super();
+	public IfThenElsePatch(Expr cond) {
+		super(cond);
 		this.elsePatch = new BlockPatch(); // !!!
 	}
 	

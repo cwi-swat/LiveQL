@@ -46,9 +46,15 @@ public abstract class Type {
 		return false;
 	}
 
-	public abstract Value convertFromStr(nl.cwi.swat.liveql.eval.Str str);
+	public Value convertFromStr(nl.cwi.swat.liveql.eval.Str str) {
+		throw new AssertionError("subclasses should override this method");
+	}
 
-	public abstract Value convertFromInt(nl.cwi.swat.liveql.eval.Int n);
+	public Value convertFromInt(nl.cwi.swat.liveql.eval.Int n) {
+		throw new AssertionError("subclasses should override this method");
+	}
 
-	public abstract Value convertFromBool(nl.cwi.swat.liveql.eval.Bool bool);
+	public Value convertFromBool(nl.cwi.swat.liveql.eval.Bool bool) {
+		throw new AssertionError("subclasses should override this method");
+	}
 }
