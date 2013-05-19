@@ -52,4 +52,9 @@ public class Bool extends Type {
 	public Value convertFromBool(nl.cwi.swat.liveql.eval.Bool bool) {
 		return bool;
 	}
+
+	@Override
+	public Value defaultValue() {
+		return new nl.cwi.swat.liveql.eval.Bool(false);
+	}
 }

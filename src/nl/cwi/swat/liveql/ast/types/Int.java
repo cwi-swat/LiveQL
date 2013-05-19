@@ -49,4 +49,9 @@ public class Int extends Numeric {
 	public Value convertFromBool(nl.cwi.swat.liveql.eval.Bool bool) {
 		return new nl.cwi.swat.liveql.eval.Int(bool.getValue() ? 1 : 0);
 	}
+	
+	@Override
+	public Value defaultValue() {
+		return new nl.cwi.swat.liveql.eval.Int(0);
+	}
 }

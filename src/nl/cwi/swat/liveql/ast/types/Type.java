@@ -26,6 +26,8 @@ public abstract class Type {
 	
 	public abstract boolean isCompatibleTo(Type t);
 	
+	public abstract Value defaultValue();
+	
 	public boolean isCompatibleToInt() {
 		return false;
 	}

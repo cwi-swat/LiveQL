@@ -10,7 +10,6 @@ import nl.cwi.swat.liveql.diff.Match;
 import nl.cwi.swat.liveql.diff.edits.BlockEdit;
 import nl.cwi.swat.liveql.diff.edits.BlockEditFactory;
 import nl.cwi.swat.liveql.patch.BlockPatch;
-import nl.cwi.swat.liveql.patch.ConditionalPatch;
 import nl.cwi.swat.liveql.patch.IfThenElsePatch;
 import nl.cwi.swat.liveql.patch.IfThenPatch;
 import nl.cwi.swat.liveql.patch.QuestionPatch;

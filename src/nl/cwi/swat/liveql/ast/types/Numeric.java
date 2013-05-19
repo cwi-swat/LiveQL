@@ -59,4 +59,9 @@ public class Numeric extends Type {
 	public Value convertFromBool(Bool bool) {
 		throw new AssertionError("numeric does not have values");
 	}
+	
+	@Override
+	public Value defaultValue() {
+		throw new AssertionError("numeric does not have values");
+	}
 }

@@ -52,4 +52,9 @@ public class Str extends Type {
 	public Value convertFromBool(Bool bool) {
 		return new nl.cwi.swat.liveql.eval.Str(bool.getValue().toString());
 	}
+	
+	@Override
+	public Value defaultValue() {
+		return new nl.cwi.swat.liveql.eval.Str("");
+	}
 }
