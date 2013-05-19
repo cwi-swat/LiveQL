@@ -34,6 +34,8 @@ import javax.swing.tree.DefaultTreeModel;
 
 import net.miginfocom.swing.MigLayout;
 import nl.cwi.swat.liveql.ast.form.Form;
+import nl.cwi.swat.liveql.ast.stat.Block;
+import nl.cwi.swat.liveql.ast.stat.Stat;
 import nl.cwi.swat.liveql.check.Message;
 import nl.cwi.swat.liveql.parser.test.ParseError;
 import nl.cwi.swat.liveql.patch.FormPatch;
@@ -149,13 +151,11 @@ public class App implements Runnable {
 		renderFrame.setLayout(new FlowLayout());
 		Container panel = renderFrame.getContentPane();
 		panel.setLayout(new MigLayout("wrap 2", "[grow][grow]"));
-		RenderDelta renderer = new RenderDelta(state, panel);
-		form.getBody().accept(renderer);
-		//renderFrame.getContentPane().add(theGui.getPanel());
+		RenderDelta.render(new Form(form.getName(), new Block(new ArrayList<Stat>(), -1)).diff(form), state, panel);
 		renderFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		renderFrame.pack();
 		renderFrame.setLocationRelativeTo(null);
-		renderFrame.setLocation(700, 100);
+		renderFrame.setLocation(800, 100);
 		renderFrame.setVisible(true);		
 	}
 
@@ -234,19 +234,9 @@ public class App implements Runnable {
 				}
 				
 				form = form2;
-				//renderFrame.getContentPane().removeAll();
-				//State newState = new State(state.getEnv());
-//				Renderer.render(form, newState, 
-//						renderFrame.getContentPane(), editor, renderFrame);
-//				newState.merge(state);
-//				state = newState;
-				RenderDelta renderer = new RenderDelta(state, renderFrame.getContentPane());
-				diff.accept(renderer);
-				//theGui.setState(gui.getState());
-				//renderFrame.getContentPane().add(gui.getPanel());
+				RenderDelta.render(diff, state, renderFrame.getContentPane());
+				renderFrame.getContentPane();
 				renderFrame.pack();
-//				renderFrame.getContentPane().repaint();
-//				renderFrame.repaint();
 			}
 			catch (ParseError e) {
 				System.err.println("Parse error: " + e.getMessage());

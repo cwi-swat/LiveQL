@@ -49,7 +49,15 @@ public class RenderDelta implements
 	private Container panel;
 	private Set<QState> dirty;
 	
-	public RenderDelta(State state, Container panel) {
+	public static void render(FormPatch patch, State state, Container panel) {
+		RenderDelta renderer = new RenderDelta(state, panel);
+		patch.accept(renderer);
+		for (QState x: renderer.dirty) {
+			state.trigger(x.getName());
+		}
+	}
+	
+	private RenderDelta(State state, Container panel) {
 		this.state = state;
 		this.panel = panel;
 		this.dirty = new HashSet<QState>();
@@ -96,7 +104,6 @@ public class RenderDelta implements
 		for (QLEdit e: patch.getEdits()) {
 			e.accept(this);
 		}
-		// TODO: update conditions here.
 		question++; // move to next
 	}
 
@@ -120,7 +127,7 @@ public class RenderDelta implements
 
 	@Override
 	public void visit(NoChange e) {
-		// No change edits are in BlockPatches.
+		// NB: change edits are in BlockPatches.
 		// in this case we just run the nested
 		// patch on the current question
 		e.getPatch().accept(this);
@@ -202,9 +209,8 @@ public class RenderDelta implements
 	}
 	
 	private void removeCurrentWidgetAndLabel() {
-		System.out.println("Label = " + panel.getComponent(currentLabelIndex()));
-		System.out.println("Widget = " + panel.getComponent(currentWidgetIndex()));
 		panel.remove(currentLabelIndex());
+		// -1 because label has just been removed
 		panel.remove(currentWidgetIndex() - 1);
 	}
 	
@@ -248,8 +254,8 @@ public class RenderDelta implements
 		Widget w = TypeToWidget.typeToWidget(state, stat.getType(), stat.getName());
 		JLabel jlabel = new JLabel(stat.getLabel().getValue());
 		// What to do about hidemode?
-		panel.add(jlabel, currentLabelIndex());
-		panel.add(w.getComponent(), currentWidgetIndex());
+		panel.add(jlabel, "hidemode 3", currentLabelIndex());
+		panel.add(w.getComponent(), "hidemode 3", currentWidgetIndex());
 		
 		QState q = new QState(stat.getName(), stat.getType(), activeConds(), stat.getExpr(),
 									Undefined.UNDEF, w, jlabel);
@@ -264,8 +270,8 @@ public class RenderDelta implements
 		Widget w = TypeToWidget.typeToWidget(state, stat.getType(), stat.getName());
 		JLabel jlabel = new JLabel(stat.getLabel().getValue());
 		// What to do about hidemode?
-		panel.add(jlabel, currentLabelIndex());
-		panel.add(w.getComponent(), currentWidgetIndex());
+		panel.add(jlabel, "hidemode 3", currentLabelIndex());
+		panel.add(w.getComponent(), "hidemode 3", currentWidgetIndex());
 		
 		QState q = new QState(stat.getName(), stat.getType(), activeConds(), null,
 									Undefined.UNDEF, w, jlabel);

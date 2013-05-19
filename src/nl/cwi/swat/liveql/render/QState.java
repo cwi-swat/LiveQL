@@ -2,6 +2,7 @@ package nl.cwi.swat.liveql.render;
 
 import java.util.List;
 
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 import nl.cwi.swat.liveql.ast.expr.Expr;
@@ -68,7 +69,6 @@ class QState {
 	
 	private boolean isVisible(State env) {
 		for (Expr cond: conds) {
-			System.out.println("Evaling: " + cond);
 			Value value = cond.accept(new Eval(env));
 			boolean enabled = value.isDefined() && ((Bool)value).getValue();
 			if (!enabled) {
@@ -82,6 +82,7 @@ class QState {
 		boolean visible = isVisible(env);
 		widget.setVisible(visible);
 		label.setVisible(visible);
+		((JFrame)widget.getComponent().getTopLevelAncestor()).pack();
 	}
 
 	
