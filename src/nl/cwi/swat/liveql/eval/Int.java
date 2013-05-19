@@ -115,4 +115,14 @@ public class Int extends Value {
 		return type.convertFromInt(this);
 	}
 	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!(obj instanceof Int)) {
+			return false;
+		}
+		return getValue().equals(((Int)obj).getValue());
+	}
 }

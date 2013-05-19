@@ -43,4 +43,15 @@ public class Bool extends Value {
 		return type.convertFromBool(this);
 	}
 	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!(obj instanceof Bool)) {
+			return false;
+		}
+		return getValue().equals(((Bool)obj).getValue());
+	}
+	
 }

@@ -142,6 +142,15 @@ public class Undefined extends Value {
 		return this;
 	}
 	
-
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!(obj instanceof Undefined)) {
+			return false;
+		}
+		return true;
+	}
 	
 }
