@@ -2,9 +2,6 @@ package nl.cwi.swat.liveql.check;
 
 import nl.cwi.swat.liveql.ast.types.Type;
 import nl.cwi.swat.liveql.ast.types.Visitor;
-import nl.cwi.swat.liveql.eval.Bool;
-import nl.cwi.swat.liveql.eval.Int;
-import nl.cwi.swat.liveql.eval.Str;
 import nl.cwi.swat.liveql.eval.Value;
 
 public class Error extends Type {
@@ -26,6 +23,11 @@ public class Error extends Type {
 	@Override
 	public <T, U> T accept(Visitor<T, U> visitor, U arg) {
 		return visitor.visit(this, arg);
+	}
+	
+	@Override
+	public Value defaultValue() {
+		throw new AssertionError("error type does not have values");
 	}
 
 }
