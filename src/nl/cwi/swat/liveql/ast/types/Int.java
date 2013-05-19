@@ -32,7 +32,12 @@ public class Int extends Numeric {
 	
 	@Override
 	public Value convertFromStr(nl.cwi.swat.liveql.eval.Str str) {
-		return new nl.cwi.swat.liveql.eval.Int(Integer.parseInt(str.getValue()));
+		try {
+			return new nl.cwi.swat.liveql.eval.Int(Integer.parseInt(str.getValue()));
+		}
+		catch (NumberFormatException e) {
+			return new nl.cwi.swat.liveql.eval.Int(0);
+		}
 	}
 
 	@Override
