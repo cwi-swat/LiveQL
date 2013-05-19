@@ -2,9 +2,7 @@ package nl.cwi.swat.liveql.render;
 
 import java.awt.Container;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.Stack;
 
 import javax.swing.JComponent;
@@ -47,7 +45,7 @@ public class RenderDelta implements
 	private int question = 0;
 	private State state;
 	private Container panel;
-	private Set<QState> dirty;
+	private List<QState> dirty;
 	
 	public static void render(FormPatch patch, State state, Container panel) {
 		RenderDelta renderer = new RenderDelta(state, panel);
@@ -60,7 +58,7 @@ public class RenderDelta implements
 	private RenderDelta(State state, Container panel) {
 		this.state = state;
 		this.panel = panel;
-		this.dirty = new HashSet<QState>();
+		this.dirty = new ArrayList<QState>();
 	}
 	
 	@Override
@@ -253,12 +251,12 @@ public class RenderDelta implements
 	public void visit(Computed stat) {
 		Widget w = TypeToWidget.typeToWidget(state, stat.getType(), stat.getName());
 		JLabel jlabel = new JLabel(stat.getLabel().getValue());
-		// What to do about hidemode?
 		panel.add(jlabel, "hidemode 3", currentLabelIndex());
 		panel.add(w.getComponent(), "hidemode 3", currentWidgetIndex());
 		
 		QState q = new QState(stat.getName(), stat.getType(), activeConds(), stat.getExpr(),
 									Undefined.UNDEF, w, jlabel);
+		q.recompute(state);
 		state.add(question, q, w);
 		q.updateVisibility(state);
 		dirty.add(q);
@@ -274,7 +272,7 @@ public class RenderDelta implements
 		panel.add(w.getComponent(), "hidemode 3", currentWidgetIndex());
 		
 		QState q = new QState(stat.getName(), stat.getType(), activeConds(), null,
-									Undefined.UNDEF, w, jlabel);
+									stat.getType().defaultValue(), w, jlabel);
 		state.add(question, q, w);
 		q.updateVisibility(state);
 		dirty.add(q);

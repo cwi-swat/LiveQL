@@ -40,7 +40,9 @@ public class TypeToWidget implements Visitor<Widget, Ident> {
 			
 			@Override
 			public void stateChanged(ChangeEvent _) {
-				theState.getState(name).setValue(new nl.cwi.swat.liveql.eval.Bool(cb.isSelected()));
+				for (QState q: theState.getStates(name)) {
+					q.setValue(new nl.cwi.swat.liveql.eval.Bool(cb.isSelected()));
+				}
 				theState.trigger(name);
 			}
 			
@@ -76,7 +78,10 @@ public class TypeToWidget implements Visitor<Widget, Ident> {
 				
 				@Override
 				public void focusLost(FocusEvent e) {
-					theState.getState(name).setValue(getValue());
+					for (QState q: theState.getStates(name)) {
+						q.setValue(getValue());
+					}
+					//theState.getState(name).setValue(getValue());
 					theState.trigger(name);
 				}
 				

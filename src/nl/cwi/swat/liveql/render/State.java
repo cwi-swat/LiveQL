@@ -5,9 +5,11 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.Stack;
 
 import nl.cwi.swat.liveql.ast.expr.Ident;
 import nl.cwi.swat.liveql.eval.Env;
+import nl.cwi.swat.liveql.eval.Undefined;
 import nl.cwi.swat.liveql.eval.Value;
 
 public class State implements Iterable<QState>, Env {
@@ -37,6 +39,17 @@ public class State implements Iterable<QState>, Env {
 		return qStates.get(i);
 	}
 	
+	public List<QState> getStates(Ident name) {
+		List<QState> qs = new ArrayList<QState>();
+		for (QState q: this) {
+			if (q.getName().equals(name)) {
+				qs.add(q);
+			}
+		}
+		return qs;
+	}
+	
+	@Deprecated
 	public QState getState(Ident name) {
 		for (QState q: this) {
 			if (q.getName().equals(name)) {
@@ -59,29 +72,59 @@ public class State implements Iterable<QState>, Env {
 
 	@Override
 	public Value get(Ident var) {
-		return getState(var).getValue();
+		for (QState q: getStates(var)) {
+			if (q.isVisible()) {
+				return q.getValue();
+			}
+		}
+		return Undefined.UNDEF;
 	}
 	
 
 	
 	public void trigger(Ident x) {
-		Set<Ident> todo = new HashSet<Ident>();
-		todo.add(x);
-		while (!todo.isEmpty()) {
-			x = todo.iterator().next();
-			todo.remove(x);
-			for (QState q: this) {
-				if (q.hasDataDependencyOn(x)) {
-					boolean changed = q.recompute(this);
-					if (changed) {
-						todo.add(q.getName());
+		boolean change = true;
+		while (change) {
+			change = false;
+			Stack<Ident> todo = new Stack<Ident>();
+			todo.push(x);
+			while (!todo.isEmpty()) {
+				Ident y = todo.pop();
+				for (QState q: this) {
+					boolean vis = false, val = false;
+					if (q.hasControlDependencyOn(y)) {
+						vis = q.updateVisibility(this);
+					}
+					if (q.hasDataDependencyOn(y)) {
+						val = q.recompute(this);
+					}
+					if (vis || val) {
+						change = true;
+						todo.push(q.getName());				
 					}
 				}
-				if (q.hasControlDependencyOn(x)) {
-					q.updateVisibility(this);
-				}
 			}
+
 		}
+//		Stack<Ident> todo = new Stack<Ident>();
+//		todo.push(x);
+//		while (!todo.isEmpty()) {
+//			Ident y = todo.pop();
+//			System.out.println("Y = " + y);
+//			for (QState q: this) {
+//				boolean vis = false, val = false;
+//				if (q.hasControlDependencyOn(y)) {
+//					vis = q.updateVisibility(this);
+//				}
+//				if (q.hasDataDependencyOn(y)) {
+//					val = q.recompute(this);
+//				}
+//				if (vis || val) {
+//					System.out.println("vis = " + vis + " val = " + val);
+//					todo.push(q.getName());				
+//				}
+//			}
+//		}
 	}
 
 	public void add(int index, QState q, Widget w) {

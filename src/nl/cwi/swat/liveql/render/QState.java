@@ -64,10 +64,15 @@ class QState {
 			return false;
 		}
 		widget.setValue(newValue);
+		setValue(newValue);
 		return true;
 	}
 	
-	private boolean isVisible(State env) {
+	public boolean isVisible() {
+		return widget.getComponent().isVisible();
+	}
+	
+	private boolean shouldBeVisible(State env) {
 		for (Expr cond: conds) {
 			Value value = cond.accept(new Eval(env));
 			boolean enabled = value.isDefined() && ((Bool)value).getValue();
@@ -78,11 +83,14 @@ class QState {
 		return true;
 	}
 
-	public void updateVisibility(State env) {
-		boolean visible = isVisible(env);
+	public boolean updateVisibility(State env) {
+		boolean visible = shouldBeVisible(env);
+		boolean wasVisible = isVisible(); 
 		widget.setVisible(visible);
+		//widget.setValue(getValue()); // unneeded?
 		label.setVisible(visible);
 		((JFrame)widget.getComponent().getTopLevelAncestor()).pack();
+		return visible != wasVisible;
 	}
 
 	
