@@ -86,21 +86,22 @@ public class State implements Iterable<QState>, Env {
 		boolean change = true;
 		while (change) {
 			change = false;
-			Stack<Ident> todo = new Stack<Ident>();
-			todo.push(x);
+			List<Ident> todo = new ArrayList<Ident>();
+			todo.add(x);
 			while (!todo.isEmpty()) {
-				Ident y = todo.pop();
+				Ident y = todo.remove(0);
 				for (QState q: this) {
 					boolean vis = false, val = false;
 					if (q.hasControlDependencyOn(y)) {
 						vis = q.updateVisibility(this);
+						val = q.recompute(this);
 					}
 					if (q.hasDataDependencyOn(y)) {
 						val = q.recompute(this);
 					}
 					if (vis || val) {
 						change = true;
-						todo.push(q.getName());				
+						todo.add(q.getName());				
 					}
 				}
 			}
