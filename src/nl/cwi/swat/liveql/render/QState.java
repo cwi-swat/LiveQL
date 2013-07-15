@@ -43,7 +43,7 @@ class QState {
 		if (isEditable()) {
 			return false;
 		}
-		return usedVars(computed).contains(x);
+		return x.equals(getName()) || usedVars(computed).contains(x);
 	}
 	
 	public boolean hasControlDependencyOn(Ident x) {
